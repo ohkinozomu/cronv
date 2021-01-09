@@ -66,12 +66,12 @@ func (self *Cronv) iter() <-chan *Exec {
 }
 
 type CronvCtx struct {
-	Opts            *Command  `json: "opts"`
-	TimeFrom        time.Time `json: "time_from"`
-	TimeTo          time.Time `json: "time_to"`
-	CronEntries     []*Cronv  `json: "cron_entries"`
-	Extras          []*Extra  `json: "extras"`
-	durationMinutes float64   `json: "duration_minutes"`
+	Opts            *Command
+	TimeFrom        time.Time
+	TimeTo          time.Time
+	CronEntries     []*Cronv
+	Extras          []*Extra
+	durationMinutes float64
 }
 
 func NewCtx(opts *Command) (*CronvCtx, error) {
