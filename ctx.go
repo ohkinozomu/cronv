@@ -119,25 +119,28 @@ func (self *CronvCtx) AppendNewLine(line string) (bool, error) {
 	return true, nil
 }
 
-func (self *CronvCtx) Dump() (string, error) {
-	jsf, err := os.Create("template/graph.js")
+func (self *CronvCtx) Dump() error {
+	if err := os.Mkdir("assets", 0644); !os.IsExist(err) {
+		return err
+	}
+	jsf, err := os.Create("assets/graph.js")
 	if err != nil {
-		return "", err
+		return err
 	}
 	js, err := buildJS()
 	if err != nil {
-		return "", err
+		return err
 	}
 	js.Execute(jsf, self)
 
-	output, err := os.Create(self.Opts.OutputFilePath)
+	output, err := os.Create("assets/" + self.Opts.OutputFilePath)
 	if err != nil {
-		return "", err
+		return err
 	}
 	t, err := makeTemplate()
 	if err != nil {
-		return "", err
+		return err
 	}
 	t.Execute(output, self)
-	return self.Opts.OutputFilePath, nil
+	return nil
 }

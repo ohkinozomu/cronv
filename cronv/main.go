@@ -3,9 +3,14 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
+	"os"
+	"os/signal"
+
 	"github.com/jessevdk/go-flags"
 	"github.com/ohkinozomu/cronv"
-	"os"
+	"github.com/ohkinozomu/cronv/server"
+	"github.com/skratchdot/open-golang/open"
 )
 
 const (
@@ -37,11 +42,19 @@ func main() {
 		panic(err)
 	}
 
-	path, err := ctx.Dump()
+	err = ctx.Dump()
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Printf("[%s] %d tasks.\n", opts.Title, len(ctx.CronEntries))
-	fmt.Printf("[%s] '%s' generated.\n", opts.Title, path)
+	log.Printf("[%s] %d tasks.\n", opts.Title, len(ctx.CronEntries))
+
+	go server.Serve()
+	log.Println("server start http://localhost:8080")
+
+	open.Run("http://localhost:8080/index.html")
+
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
 }
