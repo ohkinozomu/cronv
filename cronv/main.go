@@ -49,7 +49,7 @@ func main() {
 
 	log.Printf("[%s] %d tasks.\n", opts.Title, len(ctx.CronEntries))
 
-	go server.Serve()
+	go server.Serve(ctx)
 	log.Println("server start http://localhost:8080")
 
 	open.Run("http://localhost:8080/index.html")
