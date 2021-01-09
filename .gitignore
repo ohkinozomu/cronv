@@ -23,6 +23,6 @@ _testmain.go
 *.test
 *.prof
 
-crontab.html
+index.html
 vendor/
-graph.js
+assets

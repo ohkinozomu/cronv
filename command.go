@@ -12,7 +12,7 @@ const (
 	optDateFormat        = "2006/01/02"
 	optTimeFormat        = "15:04"
 	optDefaultDuration   = "6h"
-	optDefaultOutputPath = "./crontab.html"
+	optDefaultOutputPath = "index.html"
 	optDefaultTitle      = "Cron Tasks"
 	optDefaultWidth      = 100
 )

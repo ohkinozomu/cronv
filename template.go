@@ -39,7 +39,6 @@ func buildJS() (*template.Template, error) {
 	return template.Must(template.New("").Funcs(funcMap).Parse(TEMPLATE)), nil
 }
 
-
 func makeTemplate() (*template.Template, error) {
 	f, err := os.Open("template/template.html")
 	if err != nil {
