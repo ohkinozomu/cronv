@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-func makeTemplate() (*template.Template, error) {
-	f, err := os.Open("template/template.html")
+func buildJS() (*template.Template, error) {
+	f, err := os.Open("template/template.js")
 	if err != nil {
 		return nil, err
 	}
@@ -34,6 +34,25 @@ func makeTemplate() (*template.Template, error) {
 		},
 		"IsRunningEveryMinutes": func(c *Crontab) bool {
 			return c.isRunningEveryMinutes()
+		},
+	}
+	return template.Must(template.New("").Funcs(funcMap).Parse(TEMPLATE)), nil
+}
+
+
+func makeTemplate() (*template.Template, error) {
+	f, err := os.Open("template/template.html")
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	b, err := ioutil.ReadAll(f)
+	TEMPLATE := string(b)
+
+	funcMap := template.FuncMap{
+		"DateFormat": func(v time.Time, format string) string {
+			return v.Format(format)
 		},
 	}
 	return template.Must(template.New("").Funcs(funcMap).Parse(TEMPLATE)), nil
