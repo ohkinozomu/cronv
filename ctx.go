@@ -14,6 +14,7 @@ type Cronv struct {
 	expr            cron.Schedule
 	startTime       time.Time
 	durationMinutes float64
+	location        string
 }
 
 func NewCronv(line string, startTime time.Time, durationMinutes float64) (*Cronv, *Extra, error) {
@@ -119,6 +120,16 @@ func (self *CronvCtx) AppendNewLine(line string) (bool, error) {
 }
 
 func (self *CronvCtx) Dump() (string, error) {
+	jsf, err := os.Create("template/graph.js")
+	if err != nil {
+		return "", err
+	}
+	js, err := buildJS()
+	if err != nil {
+		return "", err
+	}
+	js.Execute(jsf, self)
+
 	output, err := os.Create(self.Opts.OutputFilePath)
 	if err != nil {
 		return "", err

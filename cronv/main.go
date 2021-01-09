@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/jessevdk/go-flags"
-	"github.com/takumakanari/cronv"
+	"github.com/ohkinozomu/cronv"
 	"os"
 )
 
