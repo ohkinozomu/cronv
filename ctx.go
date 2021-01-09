@@ -123,6 +123,10 @@ func (self *CronvCtx) Dump() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	makeTemplate().Execute(output, self)
+	t, err := makeTemplate()
+	if err != nil {
+		return "", err
+	}
+	t.Execute(output, self)
 	return self.Opts.OutputFilePath, nil
 }
