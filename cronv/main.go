@@ -9,7 +9,7 @@ import (
 
 	"github.com/jessevdk/go-flags"
 	"github.com/ohkinozomu/cronv"
-	"github.com/ohkinozomu/cronv/server"
+	"github.com/ohkinozomu/cronv/pkg/server"
 	"github.com/skratchdot/open-golang/open"
 )
 
