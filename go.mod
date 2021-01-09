@@ -3,9 +3,8 @@ module github.com/takumakanari/cronv
 go 1.12
 
 require (
-	github.com/davecgh/go-spew v1.1.1
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/jessevdk/go-flags v1.4.0
-	github.com/pmezard/go-difflib v1.0.0
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/stretchr/testify v1.3.0
-	github.com/tkmgo/cronexpr v0.0.0-20161205232929-5304e65bfa55
 )
