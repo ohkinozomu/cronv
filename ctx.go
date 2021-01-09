@@ -2,15 +2,16 @@ package cronv
 
 import (
 	"fmt"
-	"github.com/tkmgo/cronexpr"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/robfig/cron/v3"
 )
 
 type Cronv struct {
 	Crontab         *Crontab
-	expr            *cronexpr.Expression
+	expr            cron.Schedule
 	startTime       time.Time
 	durationMinutes float64
 }
@@ -26,7 +27,7 @@ func NewCronv(line string, startTime time.Time, durationMinutes float64) (*Cronv
 		return nil, extra, nil
 	}
 
-	expr, err := cronexpr.Parse(crontab.Schedule.toCrontab())
+	expr, err := cron.ParseStandard(crontab.Schedule.toCrontab())
 	if err != nil {
 		return nil, nil, err
 	}
