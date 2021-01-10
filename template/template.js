@@ -3,13 +3,13 @@ function Trim(v) {
 }
 
 function IsRunningEveryMinutes(cron) {
-  // cron.split(' ').forEach((v, i, a) => {
-  //     if (v != '*' && (i > 0 || v != '*/1')) {
-	//   		return false;
-	//   	}
-  //   }
-  // )
-  // return true;
+  const crons = cron.split(' ');
+  for (let i = 0; i < crons.length; i++) {
+    if (crons[i] != '*' && (i > 0 || crons[i] != '*/1')) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function CronvIter(cronv) {
@@ -41,11 +41,11 @@ google.charts.setOnLoadCallback(function() {
   {{range $index, $cronv := .CronEntries}}
     job = Trim('{{$cronv.Crontab.Job}}');
     tasks[job] = tasks[job] || [];
-    {{if IsRunningEveryMinutes $cronv.Crontab }}
+    if (IsRunningEveryMinutes('{{ $cronv.Crontab }}')) {
       tasks[job].push([job, '', `Every minutes ${job}`, {{NewJsDate $timeFrom}}, {{NewJsDate $timeTo}}]);
-    {{else}}
+    } else {
       {{range CronvIter $cronv}}tasks[job].push([job, '', `{{DateFormat .Start "15:04"}} ${job}`, {{NewJsDate .Start}}, {{NewJsDate .End}}]);{{end}}
-    {{ end }}
+    }
   {{end}}
 
   var taskByJobCount = [];
