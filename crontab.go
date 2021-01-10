@@ -54,7 +54,7 @@ func (e *InvalidTaskError) Error() string {
 	return fmt.Sprintf("Invalid task: '%s'", e.Line)
 }
 
-func parseCrontab(line string) (*Crontab, *Extra, error) {
+func parseCrontab(line string, crontabTZ string, outputTZ string) (*Crontab, *Extra, error) {
 	// TODO use regrex to parse: https://gist.github.com/istvanp/310203
 	parts := strings.Fields(line)
 
@@ -107,11 +107,27 @@ func parseCrontab(line string) (*Crontab, *Extra, error) {
 		}
 	}
 
+	cs, err := convertTZ(schedule, crontabTZ, outputTZ)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	crontab := &Crontab{
 		Line:     line,
-		Schedule: schedule,
+		Schedule: cs,
 		Job:      template.JSEscapeString(strings.Join(job, " ")),
 	}
 
 	return crontab, nil, nil
+}
+
+func convertTZ(s *Schedule, crontabTZ string, outputTZ string) (*Schedule, error) {
+	schedule := &Schedule{}
+	schedule.Minute = s.Minute
+	schedule.Hour = s.Hour
+	schedule.DayOfMonth = s.DayOfMonth
+	schedule.Month = s.Month
+	schedule.DayOfWeek = s.DayOfWeek
+	schedule.Alias = s.Alias
+	return schedule, nil
 }

@@ -15,6 +15,8 @@ const (
 	optDefaultOutputPath = "index.html"
 	optDefaultTitle      = "Cron Tasks"
 	optDefaultWidth      = 100
+	optDefaultCrontabTZ  = "UTC"
+	optDefaultOutputTZ   = "UTC"
 )
 
 type Command struct {
@@ -24,6 +26,8 @@ type Command struct {
 	FromTime       string `long:"from-time" description:"start time in the format '15:04' to visualize"`
 	Title          string `short:"t" long:"title" description:"title/label of output"`
 	Width          int    `short:"w" long:"width" description:"Table width of output"`
+	CrontabTZ      string `long:"crontab-tz" description:"tz of server which owns crontab"`
+	OutputTZ       string `long:"outout-tz" description:"tz of local machine to calculate timeline"`
 }
 
 func (self *Command) toFromTime() (time.Time, error) {
@@ -65,5 +69,7 @@ func NewCronvCommand() *Command {
 		FromTime:       now.Format(optTimeFormat),
 		Title:          optDefaultTitle,
 		Width:          optDefaultWidth,
+		CrontabTZ:      optDefaultCrontabTZ,
+		OutputTZ:       optDefaultOutputTZ,
 	}
 }
