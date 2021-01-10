@@ -17,8 +17,8 @@ type Cronv struct {
 	location        string
 }
 
-func NewCronv(line string, startTime time.Time, durationMinutes float64) (*Cronv, *Extra, error) {
-	crontab, extra, err := parseCrontab(line)
+func NewCronv(line string, startTime time.Time, durationMinutes float64, crontabTZ string, outputTZ string) (*Cronv, *Extra, error) {
+	crontab, extra, err := parseCrontab(line, crontabTZ, outputTZ)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -72,6 +72,8 @@ type CronvCtx struct {
 	CronEntries     []*Cronv
 	Extras          []*Extra
 	durationMinutes float64
+	CrontabTZ       string
+	OutputTZ        string
 }
 
 func NewCtx(opts *Command) (*CronvCtx, error) {
@@ -90,6 +92,8 @@ func NewCtx(opts *Command) (*CronvCtx, error) {
 		TimeFrom:        timeFrom,
 		TimeTo:          timeFrom.Add(time.Duration(durationMinutes) * time.Minute),
 		durationMinutes: durationMinutes,
+		CrontabTZ:       opts.CrontabTZ,
+		OutputTZ:        opts.OutputTZ,
 	}, nil
 }
 
@@ -99,7 +103,7 @@ func (self *CronvCtx) AppendNewLine(line string) (bool, error) {
 		return false, nil
 	}
 
-	cronv, extra, err := NewCronv(trimed, self.TimeFrom, self.durationMinutes)
+	cronv, extra, err := NewCronv(trimed, self.TimeFrom, self.durationMinutes, self.CrontabTZ, self.OutputTZ)
 	if err != nil {
 		switch err.(type) {
 		case *InvalidTaskError:
