@@ -27,7 +27,7 @@ type Command struct {
 	Title          string `short:"t" long:"title" description:"title/label of output"`
 	Width          int    `short:"w" long:"width" description:"Table width of output"`
 	CrontabTZ      string `long:"crontab-tz" description:"tz of server which owns crontab"`
-	OutputTZ       string `long:"outout-tz" description:"tz of local machine to calculate timeline"`
+	OutputTZ       string `long:"output-tz" description:"tz of local machine to calculate timeline"`
 }
 
 func (self *Command) toFromTime() (time.Time, error) {

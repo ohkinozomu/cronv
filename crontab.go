@@ -2,8 +2,12 @@ package cronv
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"text/template"
+	"time"
+
+	"github.com/tkuchiki/go-timezone"
 )
 
 type Schedule struct {
@@ -121,13 +125,75 @@ func parseCrontab(line string, crontabTZ string, outputTZ string) (*Crontab, *Ex
 	return crontab, nil, nil
 }
 
+func getOffset(key string) (int, error) {
+	tz := timezone.New()
+	tzAbbrInfos, err := tz.GetTzAbbreviationInfo(key)
+	if err != nil {
+		return 0, err
+	}
+	return tzAbbrInfos[0].Offset(), nil
+}
+
+func getOffsetDifference(TZ1 string, TZ2 string) (int, error) {
+	o1, err := getOffset(TZ1)
+	if err != nil {
+		return 0, err
+	}
+	o2, err := getOffset(TZ2)
+	if err != nil {
+		return 0, err
+	}
+	diff := o2 - o1
+	return diff, nil
+}
+
+func addZero(key string) string {
+	i, _ := strconv.Atoi(key)
+	if i >= 0 && i < 10 {
+		return "0" + key
+	}
+	return key
+}
+
+func isScheduleRunningEveryMinutes(s *Schedule) bool {
+	for i, v := range strings.Split(s.toCrontab(), " ") {
+		if v != "*" && (i > 0 || v != "*/1") {
+			return false
+		}
+	}
+	return true
+}
+
 func convertTZ(s *Schedule, crontabTZ string, outputTZ string) (*Schedule, error) {
+	if isScheduleRunningEveryMinutes(s) {
+		return s, nil
+	}
+	offsetDifference, err := getOffsetDifference(crontabTZ, outputTZ)
+	if err != nil {
+		return nil, err
+	}
+
+	//TODO: error handling
+	y, _ := strconv.Atoi(s.Year)
+	mo, _ := strconv.Atoi(s.Month)
+	dom, _ := strconv.Atoi(s.DayOfMonth)
+	h, _ := strconv.Atoi(s.Hour)
+	mi, _ := strconv.Atoi(s.Minute)
+
+	t1 := time.Date(y, time.Month(mo), dom, h, mi, 0, 0, time.UTC)
+	t2 := t1.Add(time.Duration(offsetDifference) * time.Second)
+
 	schedule := &Schedule{}
-	schedule.Minute = s.Minute
-	schedule.Hour = s.Hour
-	schedule.DayOfMonth = s.DayOfMonth
-	schedule.Month = s.Month
+
+	// this is little hacky...
+	schedule.Year = s.Year
+
+	schedule.Month = strconv.Itoa(int(t2.Month()))
+	schedule.Minute = addZero(strconv.Itoa(t2.Minute()))
+	schedule.Hour = addZero(strconv.Itoa(t2.Hour()))
+	schedule.DayOfMonth = strconv.Itoa(t2.Day())
 	schedule.DayOfWeek = s.DayOfWeek
 	schedule.Alias = s.Alias
+
 	return schedule, nil
 }

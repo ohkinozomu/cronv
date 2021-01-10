@@ -14,7 +14,6 @@ type Cronv struct {
 	expr            cron.Schedule
 	startTime       time.Time
 	durationMinutes float64
-	location        string
 }
 
 func NewCronv(line string, startTime time.Time, durationMinutes float64, crontabTZ string, outputTZ string) (*Cronv, *Extra, error) {
@@ -39,7 +38,6 @@ func NewCronv(line string, startTime time.Time, durationMinutes float64, crontab
 		startTime:       startTime,
 		durationMinutes: durationMinutes,
 	}
-
 	return cronv, extra, nil
 }
 

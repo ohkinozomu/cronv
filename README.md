@@ -88,7 +88,7 @@ $ crontab -l | cronv -d 30m -o path/to/output.html
 For 2 hours from 2016/12/24 17:30, output html file to path/to/output2.html:
 
 ```shell
-$ crontab -l | cronv -from-date '2016/12/24' -from-time 17:30 -d 2h -o path/to/output2.html
+$ crontab -l | cronv --from-date '2016/12/24' --from-time 17:30 -d 2h -o path/to/output2.html
 ```
 
 With original title/label:
@@ -103,6 +103,12 @@ With *width* to spread output table:
 $ crontab -l | cronv -o path/to/output2.html -w 180 # table width be 180% of the screen width (100% by default)
 
 $ crontab -l | cronv -o path/to/output2.html -w 75 # be 75% of the screen width
+```
+
+Convert timezon:
+
+```shell
+$ crontab -l | cronv --crontab-tz UTC --output-tz JST
 ```
 
 

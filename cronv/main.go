@@ -24,27 +24,33 @@ func main() {
 	parser := flags.NewParser(opts, flags.Default)
 	parser.Name = fmt.Sprintf("%s v%s", name, version)
 	if _, err := parser.Parse(); err != nil {
-		os.Exit(0)
+		fmt.Println("ここ")
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	ctx, err := cronv.NewCtx(opts)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		if _, err := ctx.AppendNewLine(scanner.Text()); err != nil {
-			panic(err)
+			fmt.Println(err)
+			os.Exit(1)
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	err = ctx.Dump()
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	log.Printf("[%s] %d tasks.\n", opts.Title, len(ctx.CronEntries))
