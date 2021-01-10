@@ -3,6 +3,7 @@ package cronv
 import (
 	"fmt"
 	"strings"
+	"text/template"
 )
 
 type Schedule struct {
@@ -109,7 +110,7 @@ func parseCrontab(line string) (*Crontab, *Extra, error) {
 	crontab := &Crontab{
 		Line:     line,
 		Schedule: schedule,
-		Job:      strings.Join(job, " "),
+		Job:      template.JSEscapeString(strings.Join(job, " ")),
 	}
 
 	return crontab, nil, nil

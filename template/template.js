@@ -1,9 +1,5 @@
-function JSEscapeString(v) {
-  // return v.trim();
-  fetch("http://localhost:8080/jsescapestring?v=" + v)
-    .then(response => {
-      return response.text();
-    })
+function Trim(v) {
+  return v.trim();
 }
 
 function IsRunningEveryMinutes(cron) {
@@ -43,12 +39,12 @@ google.charts.setOnLoadCallback(function() {
   {{ $timeFrom := .TimeFrom }}
   {{ $timeTo := .TimeTo }}
   {{range $index, $cronv := .CronEntries}}
-    {{ $job := JSEscapeString $cronv.Crontab.Job }}
-    tasks['{{$job}}'] = tasks['{{$job}}'] || [];
+    job = Trim('{{$cronv.Crontab.Job}}');
+    tasks[job] = tasks[job] || [];
     {{if IsRunningEveryMinutes $cronv.Crontab }}
-      tasks['{{$job}}'].push(['{{$job}}', '', 'Every minutes {{$job}}', {{NewJsDate $timeFrom}}, {{NewJsDate $timeTo}}]);
+      tasks[job].push([job, '', `Every minutes ${job}`, {{NewJsDate $timeFrom}}, {{NewJsDate $timeTo}}]);
     {{else}}
-      {{range CronvIter $cronv}}tasks['{{$job}}'].push(['{{$job}}', '', '{{DateFormat .Start "15:04"}} {{$job}}', {{NewJsDate .Start}}, {{NewJsDate .End}}]);{{end}}
+      {{range CronvIter $cronv}}tasks[job].push([job, '', `{{DateFormat .Start "15:04"}} ${job}`, {{NewJsDate .Start}}, {{NewJsDate .End}}]);{{end}}
     {{ end }}
   {{end}}
 
